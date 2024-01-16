@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id      Int       @id @default(autoincrement())
+  name    String
+  service Service[]
+
+  @@map("categories")
+}
+
+model Service {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  serviceName String
+  content     String?
+  image       String?
+  status      String
+  price       String
+  categoryId  Int?
+  Category    Category? @relation(fields: [categoryId], references: [id])
+  review      Review[]
+
+  @@map("services")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  review    String
+  rating    Int
+  serviceId Int
+  service   Service  @relation(fields: [serviceId], references: [id])
+
+  @@map("reviews")
+}
